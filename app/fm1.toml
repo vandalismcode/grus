@@ -1,0 +1,17 @@
+# Grus on fm1-base (tools/build.py): fm1-base is a git submodule beside the app (../fm1-base)
+name = "GRUS"
+id_prefix = "FM-1_63"            # package identity: dev FM-1_6300, releases FM-1_63XXYYZZ
+usb_manufacturer = "Grus"
+usb_product = "GRUS FM-1"
+o2 = ["../src/grus.c", "../src/grus_data.c"]   # the sound core at -O2 (it runs in the audio interrupt)
+include = ["../src"]
+ram_layout = "packed"            # RAM and the pool as one budget (464 KB): the core's delay, reverb and pattern are big
+words = "words.tsv"
+ble = false                      # Bluetooth later, on fm1-base's own stack (GPL: not JieLi's libraries)
+tagline = "a groovebox with seven engines, a sampler and a lock sequencer"
+repo = ""
+licence = "GPL-3.0-only"
+credits = "Built on fm1-base and felucca-bsp."
+author = ""
+description = "Grus: eight tracks, seven synth engines and a sampler, a lock sequencer with chance, ratchets and conditions, dub delay and reverb, chains and song mode."
+tags = ["synth", "sequencer", "groovebox"]

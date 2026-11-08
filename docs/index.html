@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grus Groovebox</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Grus is an eight-track groovebox firmware for the M-VAVE FM-1: seven sound engines, a lock sequencer, live effects, chains and song mode.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a manual set like the device itself. The screen's dark ground and track colours, a narrow reading column,
+   each page of the firmware as a screenshot beside its explanation. One look, dark, on purpose: the screenshots are dark. */
+:root {
+  color-scheme: dark;
+  --bg: #0c0d0f;          /* the FM-1 screen's background */
+  --panel: #16181b;       /* its tiles */
+  --line: #2a2e33;
+  --line-2: #4a4f57;
+  --ink: #e9e7e2;
+  --dim: #a3a6ab;
+  --accent: #e09a2f;      /* track 1, Gnista */
+  --t1: #e09a2f; --t2: #c0592f; --t3: #3fa7c0; --t4: #b075c6; --t5: #74ad4f; --t6: #d96b8a; --t7: #7f95d6; --t8: #c4ad62;
+  --display: "Barlow Semi Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Barlow", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --step: clamp(15px, 0.35vw + 14px, 17px);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 var(--step)/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+img { max-width: 100%; height: auto; display: block; }
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(30px, 3vw + 18px, 44px); letter-spacing: 0.01em; }
+h3 { font-size: 24px; font-weight: 600; }
+h4 { font-size: 18px; font-weight: 600; letter-spacing: 0.02em; }
+p { margin: 0; }
+.prose { max-width: 66ch; display: grid; gap: 14px; }
+.dim { color: var(--dim); }
+.label {
+  font-family: var(--display); font-weight: 600; font-size: 13px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim);
+}
+kbd, .key {
+  font-family: var(--mono); font-size: 0.78em; font-weight: 500;
+  padding: 1px 6px 2px; border: 1px solid var(--line-2); border-bottom-width: 2px;
+  border-radius: 4px; background: var(--panel); color: var(--ink); white-space: nowrap;
+}
+
+/* ---- top bar ---- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: rgba(12, 13, 15, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: center; gap: 20px; padding-block: 10px; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.dots { display: inline-flex; gap: 4px; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+nav.toc { display: flex; gap: 4px 16px; flex-wrap: wrap; font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: 0.04em; }
+nav.toc a { color: var(--dim); text-decoration: none; }
+nav.toc a:hover { color: var(--ink); }
+@media (max-width: 760px) { nav.toc { display: none; } }
+
+/* ---- opening ---- */
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: center; padding-block: 56px 64px; }
+.hero h1 { font-size: clamp(64px, 9vw + 20px, 128px); letter-spacing: 0.06em; line-height: 0.9; }
+.hero .sub { font-family: var(--display); font-weight: 600; letter-spacing: 0.42em; font-size: 15px; color: var(--dim); margin-top: 10px; }
+.hero .lead { font-size: 20px; line-height: 1.5; max-width: 34ch; margin-top: 28px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; padding: 0; list-style: none; }
+.facts li { font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: 0.03em; padding: 4px 12px; border: 1px solid var(--line-2); border-radius: 999px; }
+.status { margin-top: 28px; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--panel); max-width: 52ch; font-size: 15px; }
+.screen { width: 100%; max-width: 360px; justify-self: center; border-radius: 18px; padding: 14px; background: #050506; border: 1px solid var(--line); box-shadow: 0 30px 60px -30px rgba(0,0,0,.9); }
+.screen img { border-radius: 4px; image-rendering: auto; }
+@media (max-width: 760px) { .hero .wrap { grid-template-columns: 1fr; gap: 32px; padding-block: 36px 44px; } .screen { max-width: 300px; } }
+
+/* ---- sections ---- */
+section.part { border-top: 1px solid var(--line); }
+section.part > .wrap { padding-block: 64px; display: grid; gap: 32px; }
+.head { display: grid; gap: 10px; }
+
+/* the panel picture */
+.panelfig { margin: 0; display: grid; gap: 14px; }
+.panelfig img { width: 100%; border-radius: 14px; }
+/* listening */
+.listen .wrap { padding-block: 0 64px; display: grid; gap: 20px; }
+.listen img { width: 100%; border-radius: 16px; }
+.player { display: grid; gap: 14px; padding: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.player audio { width: 100%; }
+.chapters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chapters button { font: 600 15px/1 var(--display); letter-spacing: 0.03em; color: var(--ink); background: transparent; border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.chapters button:hover { border-color: var(--ink); }
+.chapters button small { color: var(--dim); font-weight: 500; margin-left: 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--dim); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.tablewrap { overflow-x: auto; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px 10px 0; border-bottom: 1px solid var(--line); }
+th { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+td:first-child { white-space: nowrap; }
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 48px; }
+@media (max-width: 760px) { .cols2 { grid-template-columns: 1fr; } }
+
+/* a page of the firmware: screenshot and text */
+.shot { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: 28px 36px; align-items: start; }
+.shot figure { margin: 0; }
+.shot figure img { width: 264px; border-radius: 6px; border: 1px solid var(--line); }
+.shot .txt { display: grid; gap: 12px; min-width: 0; }
+.shot .txt ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.shot h3 .btn { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--dim); letter-spacing: 0; margin-left: 10px; vertical-align: 3px; }
+.shots { display: grid; gap: 48px; }
+@media (max-width: 640px) { .shot { grid-template-columns: 1fr; } .shot figure img { width: 100%; max-width: 320px; } }
+
+/* engines */
+.engines { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr)); gap: 20px; }
+.eng { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; padding: 18px; background: var(--panel); border-radius: 10px; border: 1px solid var(--line); }
+.eng img { width: 150px; border-radius: 4px; }
+.eng .name { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.eng .name h3 { color: var(--c); font-size: 26px; }
+.eng .name .label { letter-spacing: 0.1em; }
+.eng p { font-size: 15px; margin-top: 6px; }
+.eng .knobs { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; list-style: none; }
+.eng .knobs li { font-family: var(--display); font-weight: 500; font-size: 14px; padding: 1px 9px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--dim); }
+@media (max-width: 520px) { .eng { grid-template-columns: 1fr; } .eng img { width: 100%; max-width: 240px; } }
+
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px 32px; }
+.item { display: grid; gap: 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+.item h4 { color: var(--ink); }
+.item p { font-size: 15px; color: var(--dim); }
+
+.patterns { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 10px; counter-reset: p; }
+.patterns div { padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; display: grid; gap: 2px; }
+.patterns b { font-family: var(--display); font-weight: 600; font-size: 19px; }
+.patterns small { color: var(--dim); font-size: 14px; }
+.patterns .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+
+.lineup { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.lineup li { display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+.lineup b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: var(--bg); font-size: 13px; }
+
+pre { margin: 0; padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; font: 500 14px/1.6 var(--mono); color: var(--ink); }
+footer { border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 40px 56px; display: grid; gap: 10px; font-size: 14px; color: var(--dim); }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dots" aria-hidden="true"><i style="background:var(--t1)"></i><i style="background:var(--t3)"></i><i style="background:var(--t5)"></i><i style="background:var(--t7)"></i></span>GRUS</a>
+    <nav class="toc" aria-label="Contents">
+      <a href="#panel">Panel</a><a href="#pages">Pages</a><a href="#sequencer">Sequencer</a><a href="#engines">Engines</a>
+      <a href="#effects">Effects</a><a href="#patterns">Patterns</a><a href="#playing">Playing</a><a href="#random">Random</a><a href="#setup">Setup</a><a href="#build">Build</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>GRUS</h1>
+      <div class="sub">GROOVEBOX</div>
+      <p class="lead">An eight-track groovebox firmware for the M-VAVE FM-1. Seven sound engines, a sequencer where any knob can change on any step, and effects you play live.</p>
+      <ul class="facts">
+        <li>8 tracks</li><li>7 engines</li><li>Up to 64 steps a track</li><li>Parameter locks</li><li>Reverb and 3 delays</li><li>9 live effects</li><li>Chains and song</li><li>Arpeggiator</li>
+      </ul>
+      <p class="status"><strong>Status:</strong> in development. Grus builds for the FM-1 and runs in the simulator and the browser emulator, but it has not been played on a real FM-1 yet. It supports both versions of the FM-1, with the older and the newer flash chip.</p>
+    </div>
+    <div class="screen"><img src="img/boot2.png" width="480" height="480" alt="The FM-1 screen showing the start-up: four coloured rings and the word GRUS, groovebox underneath."></div>
+  </div>
+</section>
+
+
+<section class="listen" aria-label="Listen">
+  <div class="wrap">
+    <img src="img/panel.png" width="2000" height="1280" alt="The FM-1 running Grus: the steps page on the screen, HOME and PLAY lit, and the white keys lit where steps play.">
+    <div class="player">
+      <span class="label">Listen: the eight factory patterns, eight seconds each</span>
+      <audio id="demo" controls preload="none" src="audio/factory-patterns.mp3"></audio>
+      <div class="chapters"><button type="button" data-t="0">Kvällsljus<small>96 BPM</small></button><button type="button" data-t="8">Djupkälla<small>112 BPM</small></button><button type="button" data-t="16">Ekokammare<small>124 BPM</small></button><button type="button" data-t="24">Dubmörker<small>120 BPM</small></button><button type="button" data-t="32">Bandeko<small>118 BPM</small></button><button type="button" data-t="40">Polydub<small>120 BPM</small></button><button type="button" data-t="48">Djupfält<small>128 BPM</small></button><button type="button" data-t="56">Lofi<small>84 BPM</small></button></div>
+      <p class="dim" style="font-size:14px">Rendered by Grus's own sound code, the same that runs on the FM-1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== PANEL -->
+<section class="part" id="panel">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">The panel</span>
+      <h2>Keys, buttons and knobs</h2>
+      <div class="prose"><p>The 16 white keys are the steps. The black keys choose the track, and three of them change what the next key does. The buttons open the pages. Tap a button for its page; some do something else when you hold them for half a second.</p></div>
+    </div>
+    <figure class="panelfig">
+      <img src="img/panel-map.png" width="2000" height="1280" alt="The FM-1's panel with Grus's names on it. Buttons: FX effects (hold: live FX), SEL next row, ENV random, LFO motion, EDIT sound, GLO mixer (hold: setup), HOME steps, SAVE patterns (hold: undo), ARP visual (hold: arpeggiator), SEQ track, PLAY, REC (hold: recording settings). Knobs: MASTER volume, SELECT track, PRESETS sound preset or pattern, ALGORITHM tempo, KNOB1 to 4 the page's knobs. White keys are steps 1 to 16; black keys are tracks 1 to 7, then M, K, R, then track 8.">
+      <figcaption class="legend">
+        <span><i style="background:var(--ink)"></i>White keys: steps 1–16</span>
+        <span><i style="background:#c9cacd"></i>Black keys: tracks T1–T8</span>
+        <span><i style="background:#b5462f"></i>M mute · K copy · R clear</span>
+        <span><i style="background:var(--accent)"></i>Orange: what a long press does</span>
+      </figcaption>
+    </figure>
+    <div class="cols2">
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Button</th><th>Tap</th><th>Hold</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>HOME</kbd></td><td>Steps. Again: next 16 steps</td><td></td></tr>
+            <tr><td><kbd>EDIT</kbd></td><td>Sound. Again: knobs 5–8</td><td></td></tr>
+            <tr><td><kbd>LFO</kbd></td><td>Motion. Again: knobs 5–8</td><td></td></tr>
+            <tr><td><kbd>SEQ</kbd></td><td>Track. Again: mixer row</td><td></td></tr>
+            <tr><td><kbd>FX</kbd></td><td>Effects</td><td>Live effects</td></tr>
+            <tr><td><kbd>GLO</kbd></td><td>Mixer. Again: next row</td><td>Setup</td></tr>
+            <tr><td><kbd>SAVE</kbd></td><td>Patterns. Again: song</td><td>Undo</td></tr>
+            <tr><td><kbd>ENV</kbd></td><td>Random. Again: steps or sound</td><td></td></tr>
+            <tr><td><kbd>ARP</kbd></td><td>Visual</td><td>Arpeggiator</td></tr>
+            <tr><td><kbd>REC</kbd></td><td>Keys play notes, on or off</td><td>Scale and chords</td></tr>
+            <tr><td><kbd>PLAY</kbd></td><td>Start and stop</td><td></td></tr>
+            <tr><td><kbd>SEL</kbd></td><td>Next row of knobs</td><td></td></tr>
+            <tr><td><kbd>OCT−</kbd> <kbd>OCT+</kbd></td><td>Row 1 or row 2 of knobs; previous or next steps on STEPS; an octave in REC; <kbd>OCT+</kbd> answers yes to a question</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Encoder</th><th>Turns</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>SELECT</kbd></td><td>The track</td></tr>
+            <tr><td><kbd>ALGORITHM</kbd></td><td>The tempo, one BPM a click</td></tr>
+            <tr><td><kbd>PRESET</kbd></td><td>The pattern; on SOUND, the engine's ten sound presets</td></tr>
+            <tr><td><kbd>K1</kbd>–<kbd>K4</kbd></td><td>The four knobs of the row on screen. Hold steps and turn: a lock</td></tr>
+          </tbody>
+        </table>
+        <div class="tablewrap" style="margin-top:28px">
+          <table>
+            <thead><tr><th>Black key</th><th>Then</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>M</kbd></td><td>A track key mutes or unmutes it</td></tr>
+              <tr><td><kbd>K</kbd></td><td>A step or track key copies it; the next ones paste</td></tr>
+              <tr><td><kbd>R</kbd></td><td>A step: clear its settings. A track: clear its steps (asks first). On PATTERNS, a slot key: back to the factory pattern</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== PAGES -->
+<section class="part" id="pages">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">The screen</span>
+      <h2>The pages</h2>
+      <div class="prose"><p>Every page shows the selected track's number and engine at the top right, and a bar per track under the title. Knob pages show four knobs at a time: the bright row is the one <kbd>K1</kbd>–<kbd>K4</kbd> turn.</p></div>
+    </div>
+    <div class="shots">
+      <div class="shot">
+        <figure><img src="img/home.png" width="480" height="480" loading="lazy" alt="STEPS page: 16 circles in four rows; filled circles are steps that play, the ring with a thick border is the playhead."></figure>
+        <div class="txt">
+          <h3>Steps <span class="btn">HOME</span></h3>
+          <p>Sixteen circles, one per white key. A filled circle plays; its size is the velocity. The white ring is the playhead, and a small dot beside a circle means the step has its own settings or locks.</p>
+          <ul>
+            <li>Tap a white key to turn its step on or off.</li>
+            <li>A track can be up to 64 steps long. The dots at the top show the four pages of 16; <kbd>HOME</kbd> or <kbd>OCT+</kbd> goes to the next.</li>
+            <li>The line at the bottom says the page, the direction, the speed and the length.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/step.png" width="480" height="480" loading="lazy" alt="STEP 1 page: knobs for velocity, pitch, chance and ratchet, and below them curve, nudge and condition."></figure>
+        <div class="txt">
+          <h3>One step <span class="btn">hold a white key on STEPS</span></h3>
+          <p>Hold a step and its own settings appear. Turn a knob while holding. Hold several steps to set them all at once.</p>
+          <ul>
+            <li><b>Velocity</b> and <b>Pitch</b>: how hard, and up to two octaves up or down.</li>
+            <li><b>Chance</b>: how often it plays, 0–100 %.</li>
+            <li><b>Ratchet</b>: plays 2 to 8 times within the step. <b>Curve</b> bunches the repeats towards the start or the end.</li>
+            <li><b>Nudge</b>: later by up to three quarters of a step.</li>
+            <li><b>Condition</b>: plays only on some passes. 1:2 is the first of every two, 3:4 the third of every four.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/lock.png" width="480" height="480" loading="lazy" alt="LOCK STEPS: the sound page while step 1 is held; the FM amount knob is coloured and has a dot, meaning it is locked on that step."></figure>
+        <div class="txt">
+          <h3>Locks <span class="btn">hold a white key on SOUND, MOTION or TRACK</span></h3>
+          <p>Hold a step on a knob page and turn a knob: that value is stored on the step and plays only there; the rest of the track keeps the knob's own value. A locked knob turns the track's colour and gets a dot. Up to six knobs can be locked on one step.</p>
+          <p>Every engine knob, the motion knobs and the track's level, pan, reverb and delay can be locked.</p>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/eng0.png" width="480" height="480" loading="lazy" alt="SOUND 1-4 page for Gnista: pitch, ratio, FM amount and FM decay, with pitch sweep, sweep decay, decay and drive below."></figure>
+        <div class="txt">
+          <h3>Sound <span class="btn">EDIT</span></h3>
+          <p>The eight knobs of the track's engine. Each engine has its own; they are listed under <a href="#engines">Engines</a>. <kbd>PRESET</kbd> steps through ten sound presets for the engine.</p>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/motion.png" width="480" height="480" loading="lazy" alt="MOTION 1-4 page: filter, resonance, LFO form and rate, with depth, target, retrigger and pump below."></figure>
+        <div class="txt">
+          <h3>Motion <span class="btn">LFO</span></h3>
+          <ul>
+            <li><b>Filter</b>: a DJ filter. Left of centre is low-pass, right is high-pass, the middle is off. <b>Resonance</b> sharpens it.</li>
+            <li><b>LFO</b>: five shapes (sine, triangle, square, saw, random), from 1/16 to 8 bars, with a depth and a target: the filter, any of the engine's knobs, level or pan. <b>Retrigger</b> restarts it on every hit.</li>
+            <li><b>Pump</b>: ducks the track on every hit of track 1, the side-chain sound.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/track.png" width="480" height="480" loading="lazy" alt="TRACK 1-4 page: length, speed, direction and engine, then level, pan, reverb and delay."></figure>
+        <div class="txt">
+          <h3>Track <span class="btn">SEQ</span></h3>
+          <ul>
+            <li><b>Length</b>: 1 to 64 steps. Different lengths drift against each other.</li>
+            <li><b>Speed</b>: half, 3/4, normal, 3/2 or double.</li>
+            <li><b>Direction</b>: forward, or pendulum back and forth.</li>
+            <li><b>Engine</b>: any of the seven, on any track.</li>
+            <li>The second row: level, pan, and the sends to reverb and delay.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/mixer.png" width="480" height="480" loading="lazy" alt="MIXER: eight channel strips with meters, a fader marker each, and the level in dB under each."></figure>
+        <div class="txt">
+          <h3>Mixer <span class="btn">GLO</span></h3>
+          <p>All eight tracks with level meters. <kbd>GLO</kbd> again moves through four rows: levels 1–4, levels 5–8, the selected track's level, pan, reverb and delay, and then swing, volume, voices and tempo.</p>
+          <p><b>Voices</b> is how many sounds can ring at once, shared by all tracks (4 to 16). The count at the bottom right turns orange when they are all in use.</p>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/visual.png" width="480" height="480" loading="lazy" alt="VISUAL page: a ring of eight coloured arcs that swell with each track's level, grains flying out, and a step clock in the middle."></figure>
+        <div class="txt">
+          <h3>Visual <span class="btn">ARP</span></h3>
+          <p>Something to look at while it plays. Each track is an arc that swells with its level and throws grains on every hit. In the middle, the selected track's 16 steps as a clock with a hand at the playhead, following it through all 64 steps.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== SEQUENCER -->
+<section class="part" id="sequencer">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Timing</span>
+      <h2>The sequencer</h2>
+    </div>
+    <div class="list">
+      <div class="item"><h4>Eight tracks, eight lengths</h4><p>Each track has its own length (1–64 steps), speed and direction. A pattern's pass is the longest track, rounded up to whole bars.</p></div>
+      <div class="item"><h4>Swing</h4><p>0–60 %, on the mixer's last row. It pushes every second 1/16 late.</p></div>
+      <div class="item"><h4>Voices</h4><p>Sounds are taken from one shared pool, so a long pad tail and a busy hi-hat share the same budget.</p></div>
+      <div class="item"><h4>Chance and conditions</h4><p>Chance makes a step play sometimes. A condition makes it play on chosen passes: 1:2, 2:2, 1:3 … 4:4.</p></div>
+      <div class="item"><h4>Ratchets</h4><p>Up to eight hits inside one step, spread evenly or bunched with the curve.</p></div>
+      <div class="item"><h4>Fill</h4><p>Hold white key 16 on the live effects page: every step plays, and chance and conditions are ignored.</p></div>
+      <div class="item"><h4>Saving</h4><p>Changes are made to the pattern that is playing. Save it to a slot before loading another pattern, or the changes are gone.</p></div>
+      <div class="item"><h4>Undo</h4><p>Hold <kbd>SAVE</kbd> to step back. Grus remembers up to 24 changes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== ENGINES -->
+<section class="part" id="engines">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Sound</span>
+      <h2>Seven engines</h2>
+      <div class="prose"><p>Every engine has eight knobs, the first one always the pitch. Any engine can sit on any track. A new pattern starts with this line-up:</p></div>
+      <ul class="lineup">
+        <li style="--c:var(--t1)"><b>1</b>Gnista</li><li style="--c:var(--t2)"><b>2</b>Rost</li><li style="--c:var(--t3)"><b>3</b>Puls</li><li style="--c:var(--t4)"><b>4</b>Klang</li>
+        <li style="--c:var(--t5)"><b>5</b>Puls</li><li style="--c:var(--t6)"><b>6</b>Stöt</li><li style="--c:var(--t7)"><b>7</b>Moln</li><li style="--c:var(--t8)"><b>8</b>Skärva</li>
+      </ul>
+    </div>
+    <div class="engines">
+      <article class="eng" style="--c:var(--t1)">
+        <img src="img/eng0.png" width="480" height="480" loading="lazy" alt="Gnista's sound page.">
+        <div><div class="name"><h3>Gnista</h3><span class="label">FM percussion</span></div>
+          <p>Two-operator FM. Kicks, toms and clicky percussion. The pitch sweep makes the kick's thump.</p>
+          <ul class="knobs"><li>Pitch</li><li>Ratio</li><li>FM amount</li><li>FM decay</li><li>Pitch sweep</li><li>Sweep decay</li><li>Decay</li><li>Drive</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t2)">
+        <img src="img/eng4.png" width="480" height="480" loading="lazy" alt="Rost's sound page.">
+        <div><div class="name"><h3>Rost</h3><span class="label">Mono lead and bass</span></div>
+          <p>Two detuned saws and a sub octave through a saturating four-pole low-pass, and a distortion that adds dirt without losing the low end. Built for dark techno.</p>
+          <ul class="knobs"><li>Pitch</li><li>Detune</li><li>Sub octave</li><li>Dirt</li><li>Filter</li><li>Resonance</li><li>Env → filter</li><li>Decay</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t3)">
+        <img src="img/eng2.png" width="480" height="480" loading="lazy" alt="Puls's sound page.">
+        <div><div class="name"><h3>Puls</h3><span class="label">Noise and pulsar</span></div>
+          <p>Pulsar trains and noise through a resonant filter. Snares, claps, hi-hats and squeaky textures.</p>
+          <ul class="knobs"><li>Pitch</li><li>Formant</li><li>Noise</li><li>Filter</li><li>Resonance</li><li>Attack</li><li>Decay</li><li>Drive</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t4)">
+        <img src="img/eng1.png" width="480" height="480" loading="lazy" alt="Klang's sound page.">
+        <div><div class="name"><h3>Klang</h3><span class="label">Struck resonators</span></div>
+          <p>A strike that sets four resonators ringing. Structure goes from harmonic (wood, marimba) to metallic (bells, plates, glass).</p>
+          <ul class="knobs"><li>Pitch</li><li>Structure</li><li>Decay</li><li>Brightness</li><li>Exciter</li><li>Position</li><li>Exciter time</li><li>Drive</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t6)">
+        <img src="img/eng5.png" width="480" height="480" loading="lazy" alt="Stöt's sound page.">
+        <div><div class="name"><h3>Stöt</h3><span class="label">Dub chord stabs</span></div>
+          <p>Short chord stabs. Saw waves through a filter that closes fast after the hit, so the delay and reverb carry the sound. Two voices, so stabs ring into each other.</p>
+          <ul class="knobs"><li>Pitch</li><li>Chord</li><li>Voicing</li><li>Width</li><li>Filter</li><li>Resonance</li><li>Env → filter</li><li>Decay</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t7)">
+        <img src="img/eng3.png" width="480" height="480" loading="lazy" alt="Moln's sound page.">
+        <div><div class="name"><h3>Moln</h3><span class="label">Pads</span></div>
+          <p>Chords of drifting, detuned oscillators with a slow attack, a wide stereo field and a filter that breathes. Three voices, so the chords flow into each other. Hold sets how many steps a chord lasts.</p>
+          <ul class="knobs"><li>Pitch</li><li>Chord</li><li>Spread</li><li>Texture</li><li>Filter</li><li>Attack</li><li>Release</li><li>Hold</li></ul></div>
+      </article>
+      <article class="eng" style="--c:var(--t8)">
+        <img src="img/eng6.png" width="480" height="480" loading="lazy" alt="Skärva's sound page.">
+        <div><div class="name"><h3>Skärva</h3><span class="label">Sampler</span></div>
+          <p>Four sample slots (Kit, Break, Vinyl, Chords), each cut into up to 16 slices. Play forward, reverse, looped or ping-pong. Start, length and loop make it a texture tool as much as a drum machine.</p>
+          <ul class="knobs"><li>Pitch</li><li>Sample</li><li>Slice</li><li>Start</li><li>Length</li><li>Play</li><li>Attack</li><li>Decay</li></ul></div>
+      </article>
+    </div>
+    <p class="dim" style="max-width:66ch">Moln's chords: unison, octave, fifth, minor, major, sus4, minor 7, major 7. Stöt's: minor 7, minor 9, minor 11, sus2, quartal, major 9, minor, fifth, voiced close, in either inversion, open, or with a bass note.</p>
+  </div>
+</section>
+
+<!-- ============================================================== EFFECTS -->
+<section class="part" id="effects">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Space and movement</span>
+      <h2>Effects</h2>
+    </div>
+    <div class="shots">
+      <div class="shot">
+        <figure><img src="img/fx.png" width="480" height="480" loading="lazy" alt="EFFECTS page: room, damping, delay type and delay time, then feedback, tone, modulation and return."></figure>
+        <div class="txt">
+          <h3>Reverb and delay <span class="btn">FX</span></h3>
+          <p>Each track sends to one reverb and one delay with its own amounts (TRACK page, second row).</p>
+          <ul>
+            <li><b>Reverb</b>: Room sets the size, Damping how dark the tail gets.</li>
+            <li><b>Delay type</b>: <b>Analog</b> behaves like tape: the most feedback, the pitch bends when the time changes, and Modulation makes it wobble. <b>Digital</b> is clean and changes time quickly. <b>Pingpong</b> bounces left and right.</li>
+            <li><b>Delay time</b>: 1/16, 1/8, 3/16, 1/4, 3/8 or 1/2, locked to the tempo.</li>
+            <li><b>Feedback</b>, <b>Tone</b> (darker or brighter repeats), <b>Modulation</b> and <b>Return</b> (how loud the delay comes back).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/livefx.png" width="480" height="480" loading="lazy" alt="LIVE-FX page: nine tiles, with Reverse lit."></figure>
+        <div class="txt">
+          <h3>Live effects <span class="btn">hold FX</span></h3>
+          <p>Hold white keys 1–9 to play an effect on the whole mix; let go and it stops. Key 16 is fill. Leaving the page stops them all.</p>
+          <ul>
+            <li><b>Repeat 1/4, 1/8, 1/16</b>: loops the last beat, eighth or sixteenth.</li>
+            <li><b>Reverse</b>: plays the last beat backwards, over and over.</li>
+            <li><b>Tape stop</b>: slows down to a halt.</li>
+            <li><b>Low-pass</b>, <b>High-pass</b>: a filter that sweeps shut over half a bar while you hold it and opens again when you let go.</li>
+            <li><b>Freeze</b>: holds the reverb's tail and lets it ring on its own.</li>
+            <li><b>Dub</b>: throws the whole mix into the delay and turns its feedback up.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="list">
+      <div class="item"><h4>Limiter</h4><p>On the master, so nothing clips. The ceiling is set in SETUP, from −6 to 0 dB.</p></div>
+      <div class="item"><h4>Speaker EQ</h4><p>A curve for the FM-1's small speaker: it cuts the deep bass the speaker cannot play (below 150 Hz), lifts the low mids around 280 Hz so bass lines still come through, and softens the top. Turn it off for headphones.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== PATTERNS -->
+<section class="part" id="patterns">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Arranging</span>
+      <h2>Patterns, chains and song</h2>
+    </div>
+    <div class="shots">
+      <div class="shot">
+        <figure><img src="img/patterns.png" width="480" height="480" loading="lazy" alt="PATTERNS page: eight slots with the factory pattern names, slot 1 selected, and a line showing how far the pattern has played."></figure>
+        <div class="txt">
+          <h3>Patterns <span class="btn">SAVE</span></h3>
+          <ul>
+            <li>White keys 1–8 load a pattern. While playing, it switches when the current pattern ends.</li>
+            <li>Keys 9–16 save into slots 1–8, after a question (<kbd>OCT+</kbd> is yes). A saved slot says “Yours” and has an orange dot. Saved patterns stay after power-off.</li>
+            <li><kbd>R</kbd>, then a slot key: the slot goes back to its factory pattern.</li>
+            <li><b>Chain</b>: hold a slot key and press others. The patterns play in that order, round and round. The blue numbers show the order.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/song.png" width="480" height="480" loading="lazy" alt="SONG page: rows with a pattern and a repeat count each."></figure>
+        <div class="txt">
+          <h3>Song <span class="btn">SAVE twice</span></h3>
+          <p>A list of rows, each a pattern and how many times it plays. The knobs set the row, its pattern and repeats, song on or off, and whether the song loops or stops at the end.</p>
+          <ul>
+            <li>Key 1 adds a row, key 2 deletes one, key 3 turns the chain into a song, key 4 plays from the selected row.</li>
+            <li>With the song on, <kbd>PLAY</kbd> starts from the selected row.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <h3 style="margin-top:8px">The factory patterns</h3>
+    <div class="patterns">
+      <div><span class="n">1</span><b>Kvällsljus</b><small>96 BPM</small></div>
+      <div><span class="n">2</span><b>Djupkälla</b><small>112 BPM</small></div>
+      <div><span class="n">3</span><b>Ekokammare</b><small>124 BPM</small></div>
+      <div><span class="n">4</span><b>Dubmörker</b><small>120 BPM</small></div>
+      <div><span class="n">5</span><b>Bandeko</b><small>118 BPM</small></div>
+      <div><span class="n">6</span><b>Polydub</b><small>120 BPM</small></div>
+      <div><span class="n">7</span><b>Djupfält</b><small>128 BPM</small></div>
+      <div><span class="n">8</span><b>Lofi</b><small>84 BPM</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== PLAYING -->
+<section class="part" id="playing">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Playing</span>
+      <h2>Recording and the arpeggiator</h2>
+    </div>
+    <div class="shots">
+      <div class="shot">
+        <figure><img src="img/rec.png" width="480" height="480" loading="lazy" alt="RECORDING page: scale, transpose, chord and octave knobs, and the notes the white keys play."></figure>
+        <div class="txt">
+          <h3>Recording <span class="btn">tap REC · hold REC</span></h3>
+          <p>Tap <kbd>REC</kbd> and the keys play the selected track. While the sequencer runs, each note is written into the step that is playing. Tap again to go back to steps.</p>
+          <ul>
+            <li><b>Scale</b>: chromatic, major, minor, dorian, phrygian, mixolydian, minor and major pentatonic, harmonic minor. With a scale, the white keys play its notes and key 5 is the root.</li>
+            <li><b>Transpose</b>: the key, C to B.</li>
+            <li><b>Chord</b>: off, triad or seventh, built from the scale.</li>
+            <li><b>Octave</b>: −2 to +2, also on <kbd>OCT−</kbd> and <kbd>OCT+</kbd>.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/arp.png" width="480" height="480" loading="lazy" alt="ARPEGGIATOR page: arp on, mode up, rate 1/16, 1 octave, and the held notes C4, D#4 and G4 at the bottom."></figure>
+        <div class="txt">
+          <h3>Arpeggiator <span class="btn">hold ARP</span></h3>
+          <p>Turn Arp on, tap <kbd>REC</kbd>, and hold keys: the notes play one at a time on the selected track. It follows the sequencer's clock and swing, and runs at the tempo when stopped.</p>
+          <ul>
+            <li><b>Mode</b>: up, down, up-down, as played, random, chord.</li>
+            <li><b>Rate</b>: 1/32, 1/16, 1/8, 1/4, 1/16 triplets. <b>Octaves</b>: 1 to 4. <b>Gate</b>: note length.</li>
+            <li><b>Latch</b>: the notes keep going after you let go, until you play new ones.</li>
+            <li><b>Record</b>: the notes go into the steps while the sequencer runs.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== RANDOM -->
+<section class="part" id="random">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Ideas</span>
+      <h2>Random</h2>
+      <div class="prose"><p><kbd>ENV</kbd> opens the random page for the selected track. <kbd>ENV</kbd> again switches between steps and sound. The white keys run the actions.</p></div>
+    </div>
+    <div class="shots">
+      <div class="shot">
+        <figure><img src="img/random_steps.png" width="480" height="480" loading="lazy" alt="RANDOM STEPS page: seven actions and the density and locks knobs."></figure>
+        <div class="txt">
+          <h3>Random steps</h3>
+          <p><b>Surprise</b> writes a short motif that suits the engine and repeats it over the track, with a fill at the end of the phrase. Drums get an even spread, the kick holds the downbeat, melodic engines walk the scale set on the REC page, and pads play a few long chords.</p>
+          <ul>
+            <li><b>Density</b>: how many hits. <b>Locks</b>: how many extras (ghost notes, a nudge on the off-beats, a knob that opens over the motif).</li>
+            <li>Also: shuffle, shift left or right, wiggle the sound, clear, and double the length.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="shot">
+        <figure><img src="img/random_sound.png" width="480" height="480" loading="lazy" alt="RANDOM SOUND page: six actions and the amount and pitch knobs."></figure>
+        <div class="txt">
+          <h3>Random sound</h3>
+          <ul>
+            <li><b>Random sound</b> starts from one of the engine's presets and moves each knob by up to the amount. At 100 % anything goes.</li>
+            <li><b>Random motion</b>, <b>Random mixer</b>, <b>Wiggle sound</b> (small nudges), <b>New engine</b>, <b>Default sound</b>.</li>
+            <li><b>Pitch</b>: keep the track's pitch, or randomise it too.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== SETUP -->
+<section class="part" id="setup">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">The device</span>
+      <h2>Setup</h2>
+    </div>
+    <div class="shot">
+      <figure><img src="img/setup.png" width="480" height="480" loading="lazy" alt="SETUP page: limiter, ceiling, speaker EQ and clock, then clock out, night and brightness. The CPU load and limiter reduction are shown at the bottom."></figure>
+      <div class="txt">
+        <h3>Setup <span class="btn">hold GLO</span></h3>
+        <ul>
+          <li><b>Limiter</b> and its <b>ceiling</b>; <b>Speaker EQ</b>.</li>
+          <li><b>Clock</b>: internal, or external to follow incoming MIDI clock (USB or the MIDI jack): the tempo, start and stop. <b>Clock out</b> sends Grus's own clock over USB.</li>
+          <li><b>Night</b>: the whole screen in dim red, for dark rooms.</li>
+          <li><b>Brightness</b>: 10 to 100 %.</li>
+          <li>The bottom line shows the processor load and how hard the limiter is working.</li>
+        </ul>
+        <p class="dim">These settings, the song and the chains are saved by themselves.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== BUILD -->
+<section class="part" id="build">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Source</span>
+      <h2>Build and try</h2>
+      <div class="prose">
+        <p>Grus is written in C on <a href="https://github.com/charlesvestal/fm1-base">fm1-base</a>, which handles the FM-1's screen, keys, LEDs, audio, MIDI, storage and updates. You build it on Linux, or in WSL on Windows.</p>
+        <p>Try it in the browser first: the emulator build runs the same code with the panel, screen and sound.</p>
+      </div>
+    </div>
+    <div class="cols2">
+      <div style="display:grid;gap:10px;min-width:0">
+        <h4>The firmware package</h4>
+<pre>git clone --recursive https://github.com/charlesvestal/fm1-base ~/fm1-base
+export JIELI_TOOLCHAIN=~/.jieli/toolchain
+export AC79_SDK=~/fw-AC79_AIoT_SDK
+cd ~/fm1-base
+python3 tools/build.py ~/grus/app
+# ~/grus/app/build/grus.fwsc</pre>
+      </div>
+      <div style="display:grid;gap:10px;min-width:0">
+        <h4>The browser emulator</h4>
+<pre>source ~/emsdk/emsdk_env.sh
+cd ~/fm1-base
+python3 tools/build.py ~/grus/app --web
+cd ~/grus/app/build/emu
+python3 -m http.server 8000
+# open http://localhost:8000</pre>
+      </div>
+    </div>
+    <p class="dim" style="max-width:66ch">Before installing any custom firmware, back up the FM-1's own firmware. Grus has not been tested on hardware yet.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Grus is free software under the GNU GPL version 3. It is built on fm1-base and felucca-bsp. M-VAVE and FM-1 are names of their owner; Grus is not made or endorsed by M-VAVE.</p>
+    <p>Screenshots are from the Grus host simulator. The panel drawing is fm1-base's (MPL-2.0). The screen font is Barlow Semi Condensed (SIL Open Font License).</p>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('.chapters button').forEach(b => b.addEventListener('click', () => {
+  const a = document.getElementById('demo'); a.currentTime = +b.dataset.t; a.play();
+}));
+</script>
+</body>
+</html>

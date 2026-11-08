@@ -1,0 +1,65 @@
+# Grus in the host simulator: tools/build.py ../grus/app --host, then build/host/grus_host tests/tour.txt build/host
+master 4096
+wait 2400
+shot boot1.png
+wait 2600
+shot boot2.png
+tap HOME
+wait 100
+expect page 0
+wav tour.wav
+tap PLAY
+wait 1500
+expect playing 1
+shot home.png
+tap EDIT
+wait 300
+shot edit.png
+turn K1 3
+wait 200
+shot edit_turn.png
+tap LFO
+wait 200
+shot motion.png
+tap SEQ
+wait 200
+shot track.png
+tap FX
+wait 200
+shot fx.png
+tap GLO
+wait 600
+shot mixer.png
+tap ARP
+wait 900
+shot visual.png
+tap SAVE
+wait 300
+shot patterns.png
+key w3 down
+wait 60
+key w3 up
+wait 3000
+shot patterns_next.png
+tap HOME
+key b1 down
+wait 40
+key b1 up
+wait 300
+key w5 down
+wait 400
+shot step.png
+turn K1 -2
+wait 100
+key w5 up
+wait 200
+tap EDIT
+key w2 down
+wait 100
+turn K2 4
+wait 200
+shot lock.png
+key w2 up
+wait 1500
+wavstop
+expect slot 3

@@ -1,0 +1,195 @@
+# The features added on the FM-1: saving, REC, live FX, RANDOM, chains and the song, copy and paste, undo, setup
+master 4096
+wait 300
+tap HOME
+wait 100
+expect page 0
+# --- saving: change a step, save to slot 3 (key 11), reboot, slot 3 loads as "Yours"
+key w0 down
+wait 50
+key w0 up
+wait 50
+expect step0 0
+tap SAVE
+wait 100
+expect page 6
+key w10 down
+wait 50
+key w10 up
+wait 100
+shot ask_save.png
+tap OCT+
+wait 200
+expect own 4
+shot patterns_saved.png
+reboot
+wait 300
+tap HOME
+tap SAVE
+wait 100
+expect own 4
+key w2 down
+wait 50
+key w2 up
+wait 300
+expect slot 2
+tap HOME
+wait 100
+expect step0 0
+# forget it again: R then key 3
+key b9 down
+key b9 up
+tap SAVE
+wait 100
+key w2 down
+key w2 up
+wait 100
+tap OCT+
+wait 200
+expect own 0
+# --- chain: hold key 1, press 2 and 4
+key w0 down
+wait 50
+key w1 down
+key w1 up
+key w3 down
+key w3 up
+key w0 up
+wait 100
+expect nchain 3
+shot chain.png
+# --- song: SAVE again, chain to song
+tap SAVE
+wait 100
+expect page 11
+key w2 down
+key w2 up
+wait 100
+tap OCT+
+wait 100
+expect nrows 3
+key w0 down
+key w0 up
+wait 100
+expect nrows 4
+shot song.png
+# --- live FX: hold FX, hold key 4 (reverse) while playing
+tap HOME
+tap PLAY
+wait 600
+press FX
+wait 600
+release FX
+wait 100
+expect page 9
+wav features.wav
+key w3 down
+wait 400
+expect perf 8
+shot perf.png
+key w3 up
+wait 200
+expect perf 0
+key w4 down
+wait 900
+key w4 up
+key w5 down
+wait 700
+key w5 up
+tap HOME
+wait 100
+# --- REC: hold REC for the settings, scale minor, tap REC, play keys
+press REC
+wait 600
+release REC
+wait 100
+expect page 10
+turn K1 2
+wait 100
+turn K3 1
+wait 100
+shot recset.png
+tap REC
+wait 50
+expect rec 1
+key w4 down
+wait 80
+key w4 up
+wait 200
+key w6 down
+wait 80
+key w6 up
+wait 400
+tap REC
+expect rec 0
+wavstop
+# --- RANDOM
+tap HOME
+tap SEL
+wait 50
+tap ENV
+wait 100
+expect page 8
+shot random.png
+key w0 down
+key w0 up
+wait 100
+shot random_done.png
+tap HOME
+wait 100
+shot home_random.png
+tap ENV
+key w6 down
+key w6 up
+wait 100
+tap ENV
+wait 100
+shot random_sound.png
+key w4 down
+key w4 up
+wait 100
+# --- undo: hold SAVE
+wait 800
+press SAVE
+wait 600
+release SAVE
+wait 100
+# --- copy and paste: K, step 1, step 2
+tap HOME
+wait 100
+key b8 down
+key b8 up
+key w0 down
+key w0 up
+key w1 down
+key w1 up
+wait 100
+# --- setup: hold GLO, night on
+press GLO
+wait 600
+release GLO
+wait 100
+expect page 12
+shot setup.png
+tap SEL
+wait 50
+turn K2 1
+wait 100
+expect night 1
+shot night.png
+turn K3 -4
+wait 100
+shot night_dim.png
+turn K2 -1
+turn K3 9
+# --- MIDI clock in: external, 140 BPM
+tap SEL
+turn K4 1
+wait 100
+tap PLAY
+wait 200
+clock 96 18
+wait 100
+expect bpm >130
+wait 2000
+shot end.png

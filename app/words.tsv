@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Grus words for a screen reader (fm1-reader): the text on the screen <TAB> what to say.
+# url: https://example.invalid/grus/words/
+GRUS	grus
+STEPS	steps
+SOUND	sound
+MOTION	motion
+TRACK	track
+EFFECTS	effects
+MIXER	mixer
+PATTERNS	patterns
+VISUAL	visual

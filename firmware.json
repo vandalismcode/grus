@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "grus",
+  "name": "Grus",
+  "license": "GPL-3.0-only",
+  "tagline": "a groovebox with seven engines, a sampler and a lock sequencer",
+  "description": "Grus: eight tracks, seven synth engines and a sampler, a lock sequencer with chance, ratchets and conditions, dub delay and reverb, chains and song mode.",
+  "tags": ["synth", "sequencer", "groovebox"],
+  "hardware": {
+    "models": ["FM-1"],
+    "flash": ["856014", "B36014"],
+    "features": ["usb-audio-in", "usb-audio-out", "screen-reader"]
+  },
+  "credits": "Built on fm1-base and felucca-bsp."
+}

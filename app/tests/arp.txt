@@ -1,0 +1,57 @@
+# The arpeggiator: hold ARP for its page, REC on, hold keys
+master 4096
+wait 300
+tap HOME
+wait 100
+press ARP
+wait 600
+release ARP
+wait 100
+expect page 13
+turn K1 1
+wait 50
+tap REC
+expect rec 1
+wav arp.wav
+key w4 down
+key w6 down
+key w8 down
+wait 1000
+expect arpn 3
+expect arpfired >5
+shot arp_play.png
+key w4 up
+key w6 up
+key w8 up
+wait 100
+expect arpn 0
+# up-down over two octaves, 1/32
+turn K2 2
+turn K3 -1
+turn K4 1
+tap SEL
+turn K2 1
+wait 50
+key w0 down
+key w4 down
+wait 50
+key w0 up
+key w4 up
+wait 1200
+expect arpn 2
+shot arp_latch.png
+# playing with the sequencer, recording into the steps
+tap PLAY
+wait 100
+turn K3 1
+wait 2500
+tap PLAY
+wait 200
+tap SEL
+turn K1 -1
+wait 300
+wavstop
+tap REC
+tap HOME
+wait 200
+shot arp_written.png
