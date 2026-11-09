@@ -89,6 +89,12 @@ section.part { border-top: 1px solid var(--line); }
 section.part > .wrap { padding-block: 64px; display: grid; gap: 32px; }
 .head { display: grid; gap: 10px; }
 
+/* the emulator */
+.emu { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #000; }
+.emu iframe { display: block; width: 100%; height: min(92vh, 980px); border: 0; }
+.keys-table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.keys-table th, .keys-table td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.keys-table th { font: 600 13px/1.2 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
 /* the panel picture */
 .panelfig { margin: 0; display: grid; gap: 14px; }
 .panelfig img { width: 100%; border-radius: 14px; }
@@ -161,7 +167,7 @@ footer .wrap { padding-block: 40px 56px; display: grid; gap: 10px; font-size: 14
   <div class="wrap">
     <a class="brand" href="#top"><span class="dots" aria-hidden="true"><i style="background:var(--t1)"></i><i style="background:var(--t3)"></i><i style="background:var(--t5)"></i><i style="background:var(--t7)"></i></span>GRUS</a>
     <nav class="toc" aria-label="Contents">
-      <a href="#panel">Panel</a><a href="#pages">Pages</a><a href="#sequencer">Sequencer</a><a href="#engines">Engines</a>
+      <a href="#play">Play</a><a href="#panel">Panel</a><a href="#pages">Pages</a><a href="#sequencer">Sequencer</a><a href="#engines">Engines</a>
       <a href="#effects">Effects</a><a href="#patterns">Patterns</a><a href="#playing">Playing</a><a href="#random">Random</a><a href="#setup">Setup</a><a href="#build">Build</a>
     </nav>
   </div>
@@ -197,6 +203,39 @@ footer .wrap { padding-block: 40px 56px; display: grid; gap: 10px; font-size: 14
 </section>
 
 <!-- ============================================================== PANEL -->
+<section class="part" id="play">
+  <div class="wrap">
+    <div class="head">
+      <span class="label">Try it</span>
+      <h2>Play Grus in your browser</h2>
+      <div class="prose">
+        <p>This is the real firmware, compiled for the browser: the same code that runs on the FM-1, with its screen, its lights and its sound. Click the panel once to start the sound, then press <kbd>PLAY</kbd>.</p>
+        <p>Use the mouse on the knobs, buttons and keys: drag a knob up or down, hold a button for half a second for its second function. With the panel in focus, the computer keyboard plays too.</p>
+      </div>
+    </div>
+    <div class="emu">
+      <iframe src="emu/index.html" title="The Grus emulator: the FM-1 panel, screen and sound" loading="lazy" allow="autoplay; midi"></iframe>
+    </div>
+    <div class="cols2">
+      <table class="keys-table">
+        <tr><th>Computer key</th><th>On the FM-1</th></tr>
+        <tr><td><kbd>Q</kbd>–<kbd>I</kbd>, <kbd>A</kbd>–<kbd>K</kbd></td><td>White keys 1–8 and 9–16: the steps</td></tr>
+        <tr><td><kbd>1</kbd>–<kbd>7</kbd></td><td>Tracks 1–7</td></tr>
+        <tr><td><kbd>8</kbd> <kbd>9</kbd> <kbd>0</kbd></td><td>M (mute), K (copy), R (clear)</td></tr>
+        <tr><td><kbd>-</kbd></td><td>Track 8</td></tr>
+        <tr><td><kbd>P</kbd> · <kbd>O</kbd></td><td>PLAY · REC</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>HOME</td></tr>
+        <tr><td><kbd>Z</kbd> · <kbd>X</kbd></td><td>OCT− · OCT+</td></tr>
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>SELECT: the track</td></tr>
+      </table>
+      <div class="prose">
+        <p><a href="emu/index.html" target="_blank" rel="noopener">Open the emulator in its own window</a> for a bigger panel.</p>
+        <p>What you save in the emulator stays in this browser. A computer is much faster than the FM-1, so the emulator does not show whether the FM-1 keeps up; and knobs feel different under a mouse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="part" id="panel">
   <div class="wrap">
     <div class="head">
@@ -627,7 +666,7 @@ footer .wrap { padding-block: 40px 56px; display: grid; gap: 10px; font-size: 14
       <h2>Build and try</h2>
       <div class="prose">
         <p>Grus is written in C on <a href="https://github.com/charlesvestal/fm1-base">fm1-base</a>, which handles the FM-1's screen, keys, LEDs, audio, MIDI, storage and updates. You build it on Linux, or in WSL on Windows.</p>
-        <p>Try it in the browser first: the emulator build runs the same code with the panel, screen and sound.</p>
+        <p>Try it in the browser first: the emulator build runs the same code with the panel, screen and sound. <code>tools/site_emu.sh</code> builds it and puts it in <code>docs/emu/</code>, where this page plays it.</p>
       </div>
     </div>
     <div class="cols2">

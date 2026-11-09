@@ -1,0 +1,2 @@
+The browser emulator from fm1-base (https://github.com/charlesvestal/fm1-base, MPL-2.0: web/emu/, web/fm1panel.js,
+host/), built with Grus (GPL-3.0-only) by tools/site_emu.sh.
